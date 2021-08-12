@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 // 데이터베이스의 tableName과 컬럼 설정
-@Entity(tableName = "subscriber_test_table")
+@Entity(tableName = "subscriber_test_table1")
 data class Subscriber(
     // 컬럼명 및 특성 정의
     @PrimaryKey(autoGenerate = true)

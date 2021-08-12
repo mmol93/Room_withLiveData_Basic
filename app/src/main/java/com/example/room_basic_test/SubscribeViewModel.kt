@@ -26,7 +26,7 @@ class SubscribeViewModel(private val repository: SubscribeRepository) : ViewMode
 
     // insert 기능 설정
     // viewModelScope를 사용하는 이유
-    // viewModelScope의 경우 해당 viewModel class에 종속되어
+    // viewModelScope의 경우 해당 viewModel Class에 종속되어
     // 해당 viewModel이 삭제되면 viewModelScope도 같이 사라진다
     private fun insertFunction(subscriber: Subscriber){
         viewModelScope.launch {

@@ -4,6 +4,7 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 // 데이터베이스의 insert, delete, update, Query 등 조작 정의
+@Dao
 interface SubscriberDAO{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSubscriber(subscriber: Subscriber)
@@ -14,10 +15,10 @@ interface SubscriberDAO{
     @Delete
     suspend fun deleteSubscriber(subscriber: Subscriber)
 
-    @Query("DELETE FROM subscriber_test_table")
+    @Query("DELETE FROM subscriber_test_table1")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM subscriber_test_table")
+    @Query("SELECT * FROM subscriber_test_table1")
     // 코루틴 Flow
     fun getAllSubscribers() : Flow<List<Subscriber>>
 }
