@@ -1,9 +1,6 @@
 package com.example.room_basic_test
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.room_basic_test.database.SubscribeRepository
 import com.example.room_basic_test.database.Subscriber
 import kotlinx.coroutines.flow.collect
@@ -25,6 +22,10 @@ class SubscribeViewModel(private val repository: SubscribeRepository) : ViewMode
     val saveUpdateButtonText = MutableLiveData<String>()
     val deleteDeleteAllButtonText = MutableLiveData<String>()
 
+    private val statusMessage = MutableLiveData<Event<String>>()
+    val message : LiveData<Event<String>>
+        get() = statusMessage
+
     init {
         saveUpdateButtonText.value = "Save"
         deleteDeleteAllButtonText.value = "Delete All"
@@ -42,13 +43,14 @@ class SubscribeViewModel(private val repository: SubscribeRepository) : ViewMode
     // viewModelScope를 사용하는 이유
     // viewModelScope의 경우 해당 viewModel Class에 종속되어
     // 해당 viewModel이 삭제되면 viewModelScope도 같이 사라진다
-    private fun insertFunction(subscriber: Subscriber){
+    private fun insert(subscriber: Subscriber){
         viewModelScope.launch {
             repository.insert(subscriber)
+            statusMessage.value = Event("Subscriber Insert Successfully")
         }
     }
 
-    fun insert(){
+    fun interOrUpdate(){
         if (isUpdateOrDelete){
             subscriberToUpdateOrDelete.name = inputName.value!!
             subscriberToUpdateOrDelete.email = inputEmail.value!!
@@ -57,7 +59,7 @@ class SubscribeViewModel(private val repository: SubscribeRepository) : ViewMode
             val name = inputName.value!!
             val email = inputEmail.value!!
 
-            insertFunction(Subscriber(0, name, email))
+            insert(Subscriber(0, name, email))
             inputName.value = null
             inputEmail.value = null
         }
@@ -77,20 +79,38 @@ class SubscribeViewModel(private val repository: SubscribeRepository) : ViewMode
             subscriberToUpdateOrDelete = subscriber
             saveUpdateButtonText.value ="Save"
             deleteDeleteAllButtonText.value = "Delete All"
+            statusMessage.value = Event("Subscriber Update Successfully")
+        }
+    }
+
+    fun deleteOrClear(){
+        if (isUpdateOrDelete){
+            delete(subscriberToUpdateOrDelete)
+        }else{
+            deleteAll()
         }
     }
 
     fun delete(subscriber: Subscriber){
         viewModelScope.launch {
             repository.delete(subscriber)
+            inputName.value = null
+            inputEmail.value = null
+            isUpdateOrDelete = false
+            subscriberToUpdateOrDelete = subscriber
+            saveUpdateButtonText.value = "Save"
+            deleteDeleteAllButtonText.value = "Delete all"
+            statusMessage.value = Event("Subscriber Delete Successfully")
         }
     }
 
     fun deleteAll(){
         viewModelScope.launch {
             repository.deleteAll()
+            statusMessage.value = Event("Subscriber Clear Successfully")
         }
     }
+
     // subscriber에서 대항 데이터가 선택되게 한다
     // isUpdateOrDelete 트리거가 on이 되게 한다
     fun initUpdateAndDelete(subscriber: Subscriber){

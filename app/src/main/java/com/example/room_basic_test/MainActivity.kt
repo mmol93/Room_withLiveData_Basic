@@ -32,7 +32,14 @@ class MainActivity : AppCompatActivity() {
         binder.lifecycleOwner = this
 
         initRecyclerView()
+
+        viewModel.message.observe(this, Observer {
+            it.getContentIfNotHandled()?.let{
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
+
     private fun initRecyclerView(){
         // 리사이클로 기본 형태를 정의(layoutManager)
         binder.subscribeRecyclerView.layoutManager = LinearLayoutManager(this)

@@ -51,7 +51,7 @@
                 android:layout_weight="1"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                android:onClick="@{()->myViewModel.insert()}"
+                android:onClick="@{()->myViewModel.interOrUpdate()}"
                 android:layout_marginRight="10dp"
                 android:text="@={myViewModel.saveUpdateButtonText}" />
 
@@ -63,7 +63,7 @@
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:layout_marginLeft="10dp"
-                android:onClick="@{()->myViewModel.deleteAll()}"
+                android:onClick="@{()->myViewModel.deleteOrClear()}"
                 android:text="@={myViewModel.deleteDeleteAllButtonText}" />
         </LinearLayout>
 
