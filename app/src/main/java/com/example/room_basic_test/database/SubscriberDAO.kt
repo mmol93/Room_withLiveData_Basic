@@ -1,8 +1,9 @@
-package com.example.room_basic_test
+package com.example.room_basic_test.database
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface SubscriberDAO {
     // @Insert: 해당 정보(테이블, 컬러명 등)로 DB를 만든다
     // Room은 main 스레드에 있는 데이터 베이스에 접근할 수 없다
