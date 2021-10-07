@@ -9,9 +9,10 @@ import com.example.room_basic_test.database.Subscriber
 import com.example.room_basic_test.databinding.ItemListBinding
 
 // 매개 변수로 subscber 클래스 변수와 함수 하나를 받는다
-class MainRecyclerAdapter(private val subscriberList : List<Subscriber>,
-    private val clickListener : (Subscriber) -> Unit) : RecyclerView.Adapter<MainViewHolder>()
-{
+class MainRecyclerAdapter(private val clickListener : (Subscriber) -> Unit) : RecyclerView.Adapter<MainViewHolder>() {
+
+    private val subscriberList = ArrayList<Subscriber>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binder = DataBindingUtil.inflate<ItemListBinding>(layoutInflater, R.layout.item_list, parent, false)
@@ -26,6 +27,10 @@ class MainRecyclerAdapter(private val subscriberList : List<Subscriber>,
         return subscriberList.size
     }
 
+    fun setList(subscribers: List<Subscriber>){
+        subscriberList.clear()
+        subscriberList.addAll(subscribers)
+    }
 }
 class MainViewHolder(private val binder : ItemListBinding) : RecyclerView.ViewHolder(binder.root){
     fun bind(subscriber: Subscriber, clickListener: (Subscriber) -> Unit){
