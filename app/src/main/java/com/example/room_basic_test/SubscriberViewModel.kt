@@ -1,11 +1,9 @@
 package com.example.room_basic_test
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.room_basic_test.database.Subscriber
 import com.example.room_basic_test.database.SubscriberRepository
+import com.example.room_basic_test.event.Event
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -19,6 +17,12 @@ class SubscriberViewModel(private val repository: SubscriberRepository):ViewMode
     // 항목 클릭 시 변화하게 할 요소
     private var isUpdateOrDelete = false
     private lateinit var subscriberToUpdateOrDelete: Subscriber
+
+    // Event Wrapper 사용하기
+    private val statusEvent = MutableLiveData<Event<String>>()
+    // statusEvent를 받을 수 있는 liveData 만들기 -> MainActivity.kt에서 observe를 해준다
+    val message : LiveData<Event<String>>
+        get() = statusEvent
 
     init {
         saveUpdateButtonText.value = "save"
@@ -70,12 +74,14 @@ class SubscriberViewModel(private val repository: SubscriberRepository):ViewMode
     fun insert(subscriber: Subscriber){
         viewModelScope.launch {
             repository.insert(subscriber)
+            statusEvent.value = Event("Subscriber insert successfully")
         }
     }
 
     fun clear(){
         viewModelScope.launch {
             repository.clear()
+            statusEvent.value = Event("Subscriber clear successfully")
         }
     }
 
@@ -86,6 +92,7 @@ class SubscriberViewModel(private val repository: SubscriberRepository):ViewMode
             saveUpdateButtonText.value = "save"
             clearDeleteButtonText.value = "clear"
             isUpdateOrDelete = false
+            statusEvent.value = Event("Subscriber update successfully")
         }
     }
 
@@ -95,6 +102,7 @@ class SubscriberViewModel(private val repository: SubscriberRepository):ViewMode
             saveUpdateButtonText.value = "save"
             clearDeleteButtonText.value = "clear"
             isUpdateOrDelete = false
+            statusEvent.value = Event("Subscriber delete successfully")
         }
     }
 

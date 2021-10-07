@@ -28,6 +28,12 @@ class MainActivity : AppCompatActivity() {
         binder.lifecycleOwner = this
 
         initRecyclerView()
+
+        subscriberViewModel.message.observe(this, Observer {
+            it.getContentIfNotHandled()?.let{
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
     // 리사이클러 뷰를 초기화
     private fun initRecyclerView(){
