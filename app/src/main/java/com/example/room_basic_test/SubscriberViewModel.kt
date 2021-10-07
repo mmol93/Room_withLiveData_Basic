@@ -1,11 +1,13 @@
 package com.example.room_basic_test
 
+import android.util.Patterns
 import androidx.lifecycle.*
 import com.example.room_basic_test.database.Subscriber
 import com.example.room_basic_test.database.SubscriberRepository
 import com.example.room_basic_test.event.Event
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 
 class SubscriberViewModel(private val repository: SubscriberRepository):ViewModel() {
     val inputName = MutableLiveData<String?>()
@@ -43,19 +45,27 @@ class SubscriberViewModel(private val repository: SubscriberRepository):ViewMode
 
     // 데이터 베이스에 추가 or 업데이트
     fun saveUpdate(){
-        // 어떤 항목이 클릭 되었을 때 -> 선택 항목을 입력한 내용으로 업데이트
-        if (isUpdateOrDelete){
-            subscriberToUpdateOrDelete.name = inputName.value!!
-            subscriberToUpdateOrDelete.email = inputEmail.value!!
-            update(subscriberToUpdateOrDelete)
+        if (inputName.value == null){
+            statusEvent.value = Event("Please enter your name")
+        }else if (inputEmail.value == null){
+            statusEvent.value = Event("Please enter your email")
+        }else if (!Patterns.EMAIL_ADDRESS.matcher(inputEmail.value!!).matches()){
+            statusEvent.value = Event("Please enter email with right format")
+        }else{
+            // 어떤 항목이 클릭 되었을 때 -> 선택 항목을 입력한 내용으로 업데이트
+            if (isUpdateOrDelete){
+                subscriberToUpdateOrDelete.name = inputName.value!!
+                subscriberToUpdateOrDelete.email = inputEmail.value!!
+                update(subscriberToUpdateOrDelete)
+            }
+            else{
+                val name = inputName.value!!
+                val email = inputEmail.value!!
+                insert(Subscriber(0, name, email))
+            }
+            inputName.value = null
+            inputEmail.value = null
         }
-        else{
-            val name = inputName.value!!
-            val email = inputEmail.value!!
-            insert(Subscriber(0, name, email))
-        }
-        inputName.value = null
-        inputEmail.value = null
     }
 
     // 데이터 베이스 일부를 삭제 or 전부 삭제
