@@ -15,11 +15,11 @@ interface SubscriberDAO {
 
     // 구독자 데이터 업데이트
     @Update
-    suspend fun updateSubscriber(subscriber: Subscriber)
+    suspend fun updateSubscriber(subscriber: Subscriber) : Int
 
     // 구독자 데이터 삭제
     @Delete
-    suspend fun deleteSubscriber(subscriber: Subscriber)
+    suspend fun deleteSubscriber(subscriber: Subscriber) : Int
 
     // 구독자 데이터 전부 삭제
     @Query("Delete FROM subscriber_data_table")

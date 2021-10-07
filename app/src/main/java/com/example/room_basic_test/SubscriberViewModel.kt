@@ -73,8 +73,13 @@ class SubscriberViewModel(private val repository: SubscriberRepository):ViewMode
     // ↓ repository에 있는 메서드 호출하는 영역
     fun insert(subscriber: Subscriber){
         viewModelScope.launch {
-            repository.insert(subscriber)
-            statusEvent.value = Event("Subscriber insert successfully")
+            val rowId : Long = repository.insert(subscriber)
+            if (rowId > -1){
+                statusEvent.value = Event("Subscriber insert successfully: $rowId")
+            }else{
+                statusEvent.value = Event("Subscriber insert failed")
+            }
+
         }
     }
 
@@ -87,22 +92,30 @@ class SubscriberViewModel(private val repository: SubscriberRepository):ViewMode
 
     fun update(subscriber: Subscriber){
         viewModelScope.launch {
-            repository.update(subscriber)
-            // 한 번 실시 한 이후에 초기화
-            saveUpdateButtonText.value = "save"
-            clearDeleteButtonText.value = "clear"
-            isUpdateOrDelete = false
-            statusEvent.value = Event("Subscriber update successfully")
+            val rowId : Int = repository.update(subscriber)
+            if (rowId > 0){
+                // 한 번 실시 한 이후에 초기화
+                saveUpdateButtonText.value = "save"
+                clearDeleteButtonText.value = "clear"
+                isUpdateOrDelete = false
+                statusEvent.value = Event("Subscriber update successfully: $rowId")
+            }else{
+                statusEvent.value = Event("Subscriber update failed")
+            }
         }
     }
 
     fun delete(subscriber: Subscriber){
         viewModelScope.launch {
-            repository.delete(subscriber)
-            saveUpdateButtonText.value = "save"
-            clearDeleteButtonText.value = "clear"
-            isUpdateOrDelete = false
-            statusEvent.value = Event("Subscriber delete successfully")
+            val rowId : Int = repository.delete(subscriber)
+            if (rowId > 0){
+                saveUpdateButtonText.value = "save"
+                clearDeleteButtonText.value = "clear"
+                isUpdateOrDelete = false
+                statusEvent.value = Event("Subscriber delete successfully: $rowId")
+            }else{
+                statusEvent.value = Event("Subscriber delete failed")
+            }
         }
     }
 

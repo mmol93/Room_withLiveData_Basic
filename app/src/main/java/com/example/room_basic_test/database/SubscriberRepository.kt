@@ -7,16 +7,16 @@ class SubscriberRepository(private val dao : SubscriberDAO) {
 
     // Room 데이터베이스는 데이터를 자동으로 liveData로 처리하기 때문에
     // suspend fun을 사용한다
-    suspend fun insert(subscriber: Subscriber){
-        dao.insertSubscriber(subscriber)
+    suspend fun insert(subscriber: Subscriber) : Long{
+        return dao.insertSubscriber(subscriber)
     }
 
-    suspend fun update(subscriber: Subscriber){
-        dao.updateSubscriber(subscriber)
+    suspend fun update(subscriber: Subscriber): Int{
+        return dao.updateSubscriber(subscriber)
     }
 
-    suspend fun delete(subscriber: Subscriber){
-        dao.deleteSubscriber(subscriber)
+    suspend fun delete(subscriber: Subscriber) : Int{
+        return dao.deleteSubscriber(subscriber)
     }
 
     suspend fun clear(){
